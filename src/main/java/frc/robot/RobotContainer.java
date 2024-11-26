@@ -123,6 +123,8 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     if (!DriverStation.isFMSAttached()) {
+      // Set up test routines
+      
       // Set up SysId routines
       autoChooser.addOption(
           "Drive SysId (Quasistatic Forward)",
