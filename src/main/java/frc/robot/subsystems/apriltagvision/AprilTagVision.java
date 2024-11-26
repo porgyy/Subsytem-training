@@ -50,6 +50,6 @@ public class AprilTagVision extends VirtualSubsystem {
     Matrix<N3, N1> stdDevs = VecBuilder.fill(.7, .7, 1000);
 
     // Add result because all checks passed
-    poseManager.addVisionMeasurement(estimatedPose, inputs.timestamp, stdDevs, inputs.tagCount);
+    poseManager.addVisionMeasurement(estimatedPose, inputs.timestamp, stdDevs);
   }
 }
