@@ -33,8 +33,8 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMixed;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.util.Alert;
-import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.Alert.AlertType;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -54,7 +54,8 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController driver = new CommandXboxController(0);
-  private final CommandPS5Controller operator = new CommandPS5Controller(1); // TODO will we still be using a PS5?
+  private final CommandPS5Controller operator =
+      new CommandPS5Controller(1); // TODO will we still be using a PS5?
   private final Alert driverDisconnected =
       new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
   private final Alert operatorDisconnected =
@@ -86,8 +87,7 @@ public class RobotContainer {
                 poseManager,
                 driveCommandsConfig);
         aprilTagVision =
-            new AprilTagVision(
-                new AprilTagVisionIOLimelight("limelight"), poseManager);
+            new AprilTagVision(new AprilTagVisionIOLimelight("limelight"), poseManager);
         break;
 
       case SIM:
@@ -124,7 +124,7 @@ public class RobotContainer {
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test routines
-      
+
       // Set up SysId routines
       autoChooser.addOption(
           "Drive SysId (Quasistatic Forward)",

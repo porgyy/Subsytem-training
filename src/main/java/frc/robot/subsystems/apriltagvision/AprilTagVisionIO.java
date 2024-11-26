@@ -2,7 +2,6 @@ package frc.robot.subsystems.apriltagvision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.util.PoseManager;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface AprilTagVisionIO {
