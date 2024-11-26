@@ -122,7 +122,7 @@ public class Robot extends LoggedRobot {
     canErrorTimer.restart();
     disabledTimer.restart();
 
-    RobotController.setBrownoutVoltage(6.0);
+    RobotController.setBrownoutVoltage(6.8);
     robotContainer = new RobotContainer();
 
     DriverStation.silenceJoystickConnectionWarning(true);
