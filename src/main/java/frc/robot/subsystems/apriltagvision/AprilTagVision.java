@@ -10,7 +10,6 @@ import edu.wpi.first.math.numbers.N3;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.Pipelines;
 import frc.robot.subsystems.leds.Leds;
-import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -19,15 +18,6 @@ public class AprilTagVision extends VirtualSubsystem {
   private final AprilTagVisionIO io;
   private final AprilTagVisionIOInputsAutoLogged inputs = new AprilTagVisionIOInputsAutoLogged();
   private final PoseManager poseManager;
-
-  private final LoggedTunableNumber stdDevMultiTagFactor =
-      new LoggedTunableNumber("Vision/stdDevMultiTagFactor", 0.2);
-  private final LoggedTunableNumber stdDevSlopeDistance =
-      new LoggedTunableNumber("Vision/stdDevSlopeDistance", 0.10);
-  private final LoggedTunableNumber stdDevPowerDistance =
-      new LoggedTunableNumber("Vision/stdDevPowerDistance", 2.0);
-  private final LoggedTunableNumber minTagArea =
-      new LoggedTunableNumber("Vision/minTagAreaPercentOfImage", 3.0);
 
   public AprilTagVision(AprilTagVisionIO io, PoseManager poseManager) {
     this.io = io;
@@ -56,20 +46,8 @@ public class AprilTagVision extends VirtualSubsystem {
     double allowableDistance = inputs.tagCount; // In meters
     if (poseManager.getDistanceTo(estimatedPose) > allowableDistance) return;
 
-    // Exit if the tags are too small
-    if (inputs.avgTagArea < minTagArea.get()) return;
-
     // Create stdDevs
-    Matrix<N3, N1> stdDevs = VecBuilder.fill(.7, .7, 100);
-    if (inputs.tagCount == 1) {
-      // Change std devs based on distance to the tag
-      stdDevs =
-          stdDevs.times(
-              stdDevSlopeDistance.get() * (Math.pow(inputs.avgTagDist, stdDevPowerDistance.get())));
-    } else {
-      // Decrease std devs if multiple targets are visible
-      stdDevs = stdDevs.times(stdDevMultiTagFactor.get());
-    }
+    Matrix<N3, N1> stdDevs = VecBuilder.fill(.7, .7, 1000);
 
     // Add result because all checks passed
     poseManager.addVisionMeasurement(estimatedPose, inputs.timestamp, stdDevs, inputs.tagCount);
