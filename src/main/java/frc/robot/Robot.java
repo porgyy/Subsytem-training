@@ -93,10 +93,7 @@ public class Robot extends LoggedRobot {
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
-        new PowerDistribution(0, ModuleType.kRev); // Enables power distribution logging
         Logger.registerURCL(URCL.startExternal()); // Enables REV CAN logging !!! not replayable !!!
-        // SignalLogger.setPath("/U/logs"); // Only use signal logger for sysId
-        // SignalLogger.start();
         break;
 
       case SIM:
