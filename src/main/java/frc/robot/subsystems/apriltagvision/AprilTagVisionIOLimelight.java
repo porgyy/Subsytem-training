@@ -9,7 +9,6 @@ import frc.robot.util.PoseManager;
 
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
   private String name;
-  private final PoseManager poseManager;
 
   private static final double disconnectedTimeout = 0.5;
   private final Alert disconnectedAlert;
@@ -18,9 +17,8 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
   private final double DEFAUlT_CROP = 0.9;
   private final double CROP_BUFFER = 0.1;
 
-  public AprilTagVisionIOLimelight(String camName, PoseManager poseManager) {
+  public AprilTagVisionIOLimelight(String camName) {
     name = camName;
-    this.poseManager = poseManager;
 
     LimelightHelpers.setLEDMode_PipelineControl(name);
 
@@ -30,7 +28,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
   }
 
   @Override
-  public void updateInputs(AprilTagVisionIOInputs inputs) {
+  public void updateInputs(AprilTagVisionIOInputs inputs, PoseManager poseManager) {
     LimelightHelpers.SetRobotOrientation(
         "limelight", poseManager.getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate observation =

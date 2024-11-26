@@ -37,7 +37,7 @@ public class AprilTagVision extends VirtualSubsystem {
   }
 
   public void periodic() {
-    io.updateInputs(inputs);
+    io.updateInputs(inputs, poseManager);
     Logger.processInputs("AprilTagVision", inputs);
 
     Leds.getInstance().tagsDetected = inputs.tagCount > 0;

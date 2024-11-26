@@ -87,7 +87,7 @@ public class RobotContainer {
                 driveCommandsConfig);
         aprilTagVision =
             new AprilTagVision(
-                new AprilTagVisionIOLimelight("limelight", poseManager), poseManager);
+                new AprilTagVisionIOLimelight("limelight"), poseManager);
         break;
 
       case SIM:
