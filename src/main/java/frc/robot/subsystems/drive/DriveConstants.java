@@ -5,8 +5,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
+
 import java.util.function.BooleanSupplier;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 /** All Constants Measured in Meters and Radians (m/s, m/s^2, rad/s, rad/s^2) */
 public final class DriveConstants {
@@ -50,8 +51,8 @@ public final class DriveConstants {
   public static final record DriveCommandsConfig(
       CommandXboxController controller,
       BooleanSupplier slowMode,
-      LoggedDashboardNumber slowDriveMultiplier,
-      LoggedDashboardNumber slowTurnMultiplier) {
+      LoggedTunableNumber slowDriveMultiplier,
+      LoggedTunableNumber slowTurnMultiplier) {
 
     private static final boolean simMode = Constants.currentMode == Constants.Mode.SIM;
 

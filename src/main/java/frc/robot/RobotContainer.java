@@ -33,10 +33,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMixed;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.util.Alert;
+import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.Alert.AlertType;
 import frc.robot.util.PoseManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -63,10 +63,10 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-  private final LoggedDashboardNumber slowDriveMultiplier =
-      new LoggedDashboardNumber("Slow Drive Multiplier", 0.6);
-  private final LoggedDashboardNumber slowTurnMultiplier =
-      new LoggedDashboardNumber("Slow Turn Multiplier", 0.5);
+  private final LoggedTunableNumber slowDriveMultiplier =
+      new LoggedTunableNumber("Slow Drive Multiplier", 0.6);
+  private final LoggedTunableNumber slowTurnMultiplier =
+      new LoggedTunableNumber("Slow Turn Multiplier", 0.5);
 
   private final DriveCommandsConfig driveCommandsConfig =
       new DriveCommandsConfig(driver, () -> slowMode, slowDriveMultiplier, slowTurnMultiplier);
