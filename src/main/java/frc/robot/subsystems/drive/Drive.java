@@ -16,7 +16,6 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -43,7 +42,6 @@ import frc.robot.util.Alert;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.GeneralUtil;
 import frc.robot.util.GeomUtil;
-import frc.robot.util.LocalADStarAK;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
 import java.util.function.Supplier;
@@ -137,7 +135,6 @@ public class Drive extends SubsystemBase {
             new ReplanningConfig()),
         AllianceFlipUtil::shouldFlip,
         this);
-    Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
           Logger.recordOutput(
