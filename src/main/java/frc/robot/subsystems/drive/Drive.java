@@ -41,7 +41,6 @@ import frc.robot.subsystems.drive.DriveConstants.DriveCommandsConfig;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.util.Alert;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.EqualsUtil;
 import frc.robot.util.GeneralUtil;
 import frc.robot.util.GeomUtil;
 import frc.robot.util.LocalADStarAK;
@@ -590,7 +589,7 @@ public class Drive extends SubsystemBase {
   /** Returns true if within tolerance of aiming at speaker */
   @AutoLogOutput(key = "Drive/Commands/Theta/AtGoal")
   public boolean thetaAtGoal() {
-    return EqualsUtil.equalsWithTolerance(
+    return GeneralUtil.equalsWithTolerance(
         thetaController.getSetpoint().position,
         thetaController.getGoal().position,
         Units.degreesToRadians(thetaToleranceDeg.get()));

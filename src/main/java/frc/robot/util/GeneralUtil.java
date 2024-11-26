@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class GeneralUtil {
+  public static boolean equalsWithTolerance(double a, double b, double tolerance) {
+    return (a - tolerance <= b) && (a + tolerance >= b);
+  }
+  
   public static void logSubsystem(SubsystemBase s, String sName) {
     sName += "/cmdInfo/";
     Logger.recordOutput(sName + "hasDefault", s.getDefaultCommand() != null);
