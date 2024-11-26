@@ -9,11 +9,6 @@ public class AprilTagVisionConstants {
   /** distance from the center of the Limelight lens to the floor */
   public static final double limelightLensHeightInches = 26.5;
 
-  /** distance from the speaker tag to the floor */
-  public static final double heightOfTagInches = 56.5;
-  /** height of speaker */
-  public static final double heightOfSpeakerInches = 80;
-
   public static enum Pipelines {
     BLUE_SPEAKER,
     RED_SPEAKER,
