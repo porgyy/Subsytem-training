@@ -164,15 +164,6 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
     driver.leftBumper().onTrue(Commands.runOnce(() -> slowMode = !slowMode, drive));
-    driver
-        .b()
-        .whileTrue(
-            drive.headingDrive(
-                () ->
-                    poseManager.getHorizontalAngleTo(FieldConstants.Speaker.centerSpeakerOpening)));
-    driver
-        .y()
-        .whileTrue(drive.fullAutoDrive(() -> new Pose2d(1.815, 7.8, new Rotation2d(-Math.PI / 2))));
 
     // Operator controls for intake
   }
