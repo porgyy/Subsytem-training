@@ -528,8 +528,6 @@ public class Drive extends SubsystemBase {
     LoggedTunableNumber.ifChanged(
         hashCode(), () -> linearController.setTolerance(linearTolerance.get()), linearTolerance);
 
-    LoggedTunableNumber.ifChanged(
-        hashCode(), this::updateConstraints, maxLinearVelocity, maxLinearAcceleration);
     updateThetaTunables();
   }
 
@@ -543,8 +541,6 @@ public class Drive extends SubsystemBase {
         hashCode(),
         () -> thetaController.setTolerance(Units.degreesToRadians(thetaToleranceDeg.get())),
         thetaToleranceDeg);
-    LoggedTunableNumber.ifChanged(
-        hashCode(), this::updateThetaConstraints, maxAngularVelocity, maxAngularAcceleration);
   }
 
   private void updateConstraints() {
