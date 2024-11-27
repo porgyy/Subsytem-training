@@ -17,6 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -30,6 +31,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.LoggedTunableNumber;
 
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn motor controller, and
@@ -63,6 +65,16 @@ public class ModuleIOMixed implements ModuleIO {
   private final boolean isTurnMotorInverted;
   private final boolean isCancoderInverted;
   private final double absoluteEncoderOffseRot; // TODO tune
+
+  private final LoggedTunableNumber drive_kS =
+      new LoggedTunableNumber("drive_kS", 0.05); // Add 0.05 V output to overcome static friction
+  private final LoggedTunableNumber drive_kV =
+      new LoggedTunableNumber(
+          "drive_kV", 0.0); // A velocity target of 1 rps results in 0.02 V output
+  private final LoggedTunableNumber drive_kP =
+      new LoggedTunableNumber("drive_kP", 0.0); // An error of 1 rps results in 0.11 V output
+  private final LoggedTunableNumber drive_kD =
+      new LoggedTunableNumber("drive_kD", 0.0); // no output for error derivative
 
   public ModuleIOMixed(int index) {
     switch (index) {
@@ -131,7 +143,10 @@ public class ModuleIOMixed implements ModuleIO {
 
     cancoder.getConfigurator().apply(new CANcoderConfiguration());
     var config = new CANcoderConfiguration();
-    config.MagnetSensor.SensorDirection = isCancoderInverted ?  SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+    config.MagnetSensor.SensorDirection =
+        isCancoderInverted
+            ? SensorDirectionValue.CounterClockwise_Positive
+            : SensorDirectionValue.Clockwise_Positive;
     config.MagnetSensor.MagnetOffset = absoluteEncoderOffseRot;
     cancoder.getConfigurator().apply(config);
 
@@ -147,6 +162,8 @@ public class ModuleIOMixed implements ModuleIO {
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, driveVelocity, driveAppliedVolts, driveCurrent, turnAbsolutePosition);
     driveTalon.optimizeBusUtilization();
+
+    updateTunables();
   }
 
   @Override
@@ -171,6 +188,8 @@ public class ModuleIOMixed implements ModuleIO {
             / TURN_GEAR_RATIO;
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
+
+    updateTunables();
   }
 
   @Override
@@ -186,7 +205,10 @@ public class ModuleIOMixed implements ModuleIO {
   @Override
   public void setDriveBrakeMode(boolean enable) {
     var config = new MotorOutputConfigs();
-    config.Inverted = isDriveMotorInverted ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
+    config.Inverted =
+        isDriveMotorInverted
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive;
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     driveTalon.getConfigurator().apply(config);
   }
@@ -194,5 +216,22 @@ public class ModuleIOMixed implements ModuleIO {
   @Override
   public void setTurnBrakeMode(boolean enable) {
     turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+  }
+
+  private void updateTunables() {
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () -> {
+          Slot0Configs slot0Configs = new Slot0Configs();
+          slot0Configs.kS = drive_kS.get();
+          slot0Configs.kV = drive_kV.get();
+          slot0Configs.kP = drive_kP.get();
+          slot0Configs.kD = drive_kD.get();
+          driveTalon.getConfigurator().apply(slot0Configs);
+        },
+        drive_kS,
+        drive_kV,
+        drive_kP,
+        drive_kD);
   }
 }
