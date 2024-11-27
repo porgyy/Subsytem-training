@@ -65,26 +65,26 @@ public class ModuleIOMixed implements ModuleIO {
     switch (index) {
       case 0:
         driveTalon = new TalonFX(0);
-        turnSparkMax = new CANSparkMax(1, MotorType.kBrushless);
-        cancoder = new CANcoder(2);
+        turnSparkMax = new CANSparkMax(0, MotorType.kBrushless);
+        cancoder = new CANcoder(0);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       case 1:
-        driveTalon = new TalonFX(3);
-        turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
-        cancoder = new CANcoder(5);
+        driveTalon = new TalonFX(1);
+        turnSparkMax = new CANSparkMax(1, MotorType.kBrushless);
+        cancoder = new CANcoder(1);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       case 2:
-        driveTalon = new TalonFX(6);
-        turnSparkMax = new CANSparkMax(3, MotorType.kBrushless);
-        cancoder = new CANcoder(8);
+        driveTalon = new TalonFX(2);
+        turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
+        cancoder = new CANcoder(2);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       case 3:
-        driveTalon = new TalonFX(9);
-        turnSparkMax = new CANSparkMax(4, MotorType.kBrushless);
-        cancoder = new CANcoder(11);
+        driveTalon = new TalonFX(3);
+        turnSparkMax = new CANSparkMax(3, MotorType.kBrushless);
+        cancoder = new CANcoder(3);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
         break;
       default:
