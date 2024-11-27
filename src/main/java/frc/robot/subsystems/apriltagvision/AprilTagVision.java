@@ -39,6 +39,7 @@ public class AprilTagVision extends VirtualSubsystem {
 
     Leds.getInstance().tagsDetected = inputs.tagCount > 0;
 
+    // TODO when testing these start with none and then slowly add in to make sure I don't lose too much data
     Pose2d estimatedPose = inputs.estimatedPose.toPose2d();
     // Exit if there are no tags in sight or the pose is blank
     if (inputs.tagCount == 0 || estimatedPose.equals(new Pose2d())) return;
