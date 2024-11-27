@@ -83,7 +83,7 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
       for (int i = 3; i < tcornxy.length; i += 2) {
         minY = Math.min(minY, tcornxy[i]);
         maxY = Math.max(maxY, tcornxy[i]);
-      } 
+      }
     }
 
     // Apply crop buffer and clamp to default crop size

@@ -30,15 +30,13 @@ public class PoseManager {
 
   public PoseManager() {}
 
-  public void addOdometryMeasurement(
-      Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
+  public void addOdometryMeasurement(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
     lastModulePositions = modulePositions;
     lastGyroAngle = gyroAngle;
     poseEstimator.update(gyroAngle, modulePositions);
   }
 
-  public void addVisionMeasurement(
-      Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {
+  public void addVisionMeasurement(Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {
     // Add result because all checks passed
     poseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
   }
