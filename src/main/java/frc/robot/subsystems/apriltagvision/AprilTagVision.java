@@ -2,14 +2,20 @@ package frc.robot.subsystems.apriltagvision;
 
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.Pipelines;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.leds.Leds;
+import frc.robot.util.GeomUtil;
 import frc.robot.util.PoseManager;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -46,8 +52,34 @@ public class AprilTagVision extends VirtualSubsystem {
     double allowableDistance = inputs.tagCount; // In meters
     if (poseManager.getDistanceTo(estimatedPose) > allowableDistance) return;
 
+    double trust = .2;
+
+    // Scale trust based on number of tags
+    if (inputs.tagCount < 2) {
+      trust *= 2;
+    }
+
+    // Scale trust based on max velocity
+    ChassisSpeeds velo = GeomUtil.toChassisSpeeds(poseManager.robotVelocity());
+    if (new Translation2d(velo.vxMetersPerSecond, velo.vyMetersPerSecond).getNorm()
+        > DriveConstants.MAX_LINEAR_VELOCITY / 2.0) {
+      trust *= 2.0;
+    }
+    if (velo.omegaRadiansPerSecond > DriveConstants.MAX_ANGULAR_VELOCITY / 3.0) {
+      trust *= 2.0;
+    }
+
+    // Scale trust based on estimated rotations difference from gyro measure
+    Rotation2d rotation = poseManager.getRotation();
+    if (Math.abs(
+            MathUtil.angleModulus(rotation.getRadians())
+                - MathUtil.angleModulus(estimatedPose.getRotation().getRadians()))
+        > Math.toRadians(30.0)) {
+      trust *= 2.0;
+    }
+
     // Create stdDevs
-    Matrix<N3, N1> stdDevs = VecBuilder.fill(.7, .7, 1000);
+    Matrix<N3, N1> stdDevs = VecBuilder.fill(trust, trust, 99999);
 
     // Add result because all checks passed
     poseManager.addVisionMeasurement(estimatedPose, inputs.timestamp, stdDevs);
