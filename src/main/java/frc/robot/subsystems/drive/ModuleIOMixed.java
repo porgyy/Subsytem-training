@@ -23,6 +23,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -58,8 +59,9 @@ public class ModuleIOMixed implements ModuleIO {
   private final double DRIVE_GEAR_RATIO = 6.12244897959;
   private final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
-  private final boolean isDriveMotorInverted = true;
-  private final boolean isTurnMotorInverted = true;
+  private final boolean isDriveMotorInverted;
+  private final boolean isTurnMotorInverted;
+  private final boolean isCancoderInverted;
   private final Rotation2d absoluteEncoderOffset;
 
   public ModuleIOMixed(int index) {
@@ -69,24 +71,36 @@ public class ModuleIOMixed implements ModuleIO {
         turnSparkMax = new CANSparkMax(0, MotorType.kBrushless);
         cancoder = new CANcoder(0);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        isDriveMotorInverted = true;
+        isTurnMotorInverted = true;
+        isCancoderInverted = false;
         break;
       case 1:
         driveTalon = new TalonFX(1);
         turnSparkMax = new CANSparkMax(1, MotorType.kBrushless);
         cancoder = new CANcoder(1);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        isDriveMotorInverted = true;
+        isTurnMotorInverted = true;
+        isCancoderInverted = false;
         break;
       case 2:
         driveTalon = new TalonFX(2);
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         cancoder = new CANcoder(2);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        isDriveMotorInverted = true;
+        isTurnMotorInverted = true;
+        isCancoderInverted = false;
         break;
       case 3:
         driveTalon = new TalonFX(3);
         turnSparkMax = new CANSparkMax(3, MotorType.kBrushless);
         cancoder = new CANcoder(3);
         absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        isDriveMotorInverted = true;
+        isTurnMotorInverted = true;
+        isCancoderInverted = false;
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -116,6 +130,9 @@ public class ModuleIOMixed implements ModuleIO {
     turnSparkMax.burnFlash();
 
     cancoder.getConfigurator().apply(new CANcoderConfiguration());
+    var config = new CANcoderConfiguration();
+    config.MagnetSensor.SensorDirection = isCancoderInverted ?  SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+    cancoder.getConfigurator().apply(config);
 
     drivePosition = driveTalon.getPosition();
     driveVelocity = driveTalon.getVelocity();
