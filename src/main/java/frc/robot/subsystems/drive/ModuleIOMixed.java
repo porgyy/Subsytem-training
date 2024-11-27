@@ -25,6 +25,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -94,6 +95,8 @@ public class ModuleIOMixed implements ModuleIO {
     var driveConfig = new TalonFXConfiguration();
     driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveConfig.CurrentLimits.StatorCurrentLimit = 120.0;
+    driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     driveTalon.getConfigurator().apply(driveConfig);
     setDriveBrakeMode(true);
 
@@ -102,6 +105,7 @@ public class ModuleIOMixed implements ModuleIO {
     turnRelativeEncoder = turnSparkMax.getEncoder();
     turnSparkMax.setInverted(isTurnMotorInverted);
     turnSparkMax.setSmartCurrentLimit(30);
+    turnSparkMax.setSecondaryCurrentLimit(80, 1);
     turnSparkMax.enableVoltageCompensation(12.0);
 
     turnRelativeEncoder.setPosition(0.0);
