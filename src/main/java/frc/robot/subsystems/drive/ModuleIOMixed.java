@@ -62,7 +62,7 @@ public class ModuleIOMixed implements ModuleIO {
   private final boolean isDriveMotorInverted;
   private final boolean isTurnMotorInverted;
   private final boolean isCancoderInverted;
-  private final Rotation2d absoluteEncoderOffset;
+  private final double absoluteEncoderOffseRot; // TODO tune
 
   public ModuleIOMixed(int index) {
     switch (index) {
@@ -70,7 +70,7 @@ public class ModuleIOMixed implements ModuleIO {
         driveTalon = new TalonFX(0);
         turnSparkMax = new CANSparkMax(0, MotorType.kBrushless);
         cancoder = new CANcoder(0);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffseRot = 0.0; // MUST BE CALIBRATED
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         isCancoderInverted = false;
@@ -79,7 +79,7 @@ public class ModuleIOMixed implements ModuleIO {
         driveTalon = new TalonFX(1);
         turnSparkMax = new CANSparkMax(1, MotorType.kBrushless);
         cancoder = new CANcoder(1);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffseRot = 0.0; // MUST BE CALIBRATED
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         isCancoderInverted = false;
@@ -88,7 +88,7 @@ public class ModuleIOMixed implements ModuleIO {
         driveTalon = new TalonFX(2);
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         cancoder = new CANcoder(2);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffseRot = 0.0; // MUST BE CALIBRATED
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         isCancoderInverted = false;
@@ -97,7 +97,7 @@ public class ModuleIOMixed implements ModuleIO {
         driveTalon = new TalonFX(3);
         turnSparkMax = new CANSparkMax(3, MotorType.kBrushless);
         cancoder = new CANcoder(3);
-        absoluteEncoderOffset = new Rotation2d(0.0); // MUST BE CALIBRATED
+        absoluteEncoderOffseRot = 0.0; // MUST BE CALIBRATED
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         isCancoderInverted = false;
@@ -132,6 +132,7 @@ public class ModuleIOMixed implements ModuleIO {
     cancoder.getConfigurator().apply(new CANcoderConfiguration());
     var config = new CANcoderConfiguration();
     config.MagnetSensor.SensorDirection = isCancoderInverted ?  SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+    config.MagnetSensor.MagnetOffset = absoluteEncoderOffseRot;
     cancoder.getConfigurator().apply(config);
 
     drivePosition = driveTalon.getPosition();
@@ -162,9 +163,7 @@ public class ModuleIOMixed implements ModuleIO {
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
 
-    inputs.turnAbsolutePosition =
-        Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
-            .minus(absoluteEncoderOffset);
+    inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
     inputs.turnPosition =
         Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
     inputs.turnVelocityRadPerSec =
