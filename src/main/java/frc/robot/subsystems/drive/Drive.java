@@ -560,7 +560,7 @@ public class Drive extends SubsystemBase {
   }
 
   private void resetControllers(Pose2d goalPose) {
-    Twist2d fieldVelocity = poseManager.getVelocity();
+    Twist2d fieldVelocity = poseManager.fieldVelocity();
     double linearVelocity =
         Math.min(
             0.0,
@@ -573,7 +573,7 @@ public class Drive extends SubsystemBase {
 
   private void resetThetaController() {
     Pose2d currentPose = poseManager.getPose();
-    Twist2d fieldVelocity = poseManager.getVelocity();
+    Twist2d fieldVelocity = poseManager.fieldVelocity();
     thetaController.reset(currentPose.getRotation().getRadians(), fieldVelocity.dtheta);
   }
 
