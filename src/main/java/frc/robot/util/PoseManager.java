@@ -23,7 +23,6 @@ public class PoseManager {
       };
   private Rotation2d lastGyroAngle = new Rotation2d();
   private Twist2d robotVelocity = new Twist2d();
-  private double lastYawVelocity = 0.0;
 
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(
@@ -32,19 +31,14 @@ public class PoseManager {
   public PoseManager() {}
 
   public void addOdometryMeasurement(
-      Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, double yawVelocity) {
+      Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
     lastModulePositions = modulePositions;
     lastGyroAngle = gyroAngle;
     poseEstimator.update(gyroAngle, modulePositions);
-    lastYawVelocity = yawVelocity;
   }
 
   public void addVisionMeasurement(
       Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {
-    // Exit if the robot's angular velocity is too high
-    if (Math.abs(lastYawVelocity) > 720) {
-      return;
-    }
     // Add result because all checks passed
     poseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
   }
@@ -114,5 +108,10 @@ public class PoseManager {
         new Translation2d(robotVelocity.dx, robotVelocity.dy).rotateBy(getPose().getRotation());
     return new Twist2d(
         linearFieldVelocity.getX(), linearFieldVelocity.getY(), robotVelocity.dtheta);
+  }
+
+  @AutoLogOutput(key = "Odometry/RobotVelocity")
+  public Twist2d robotVelocity() {
+    return robotVelocity;
   }
 }
