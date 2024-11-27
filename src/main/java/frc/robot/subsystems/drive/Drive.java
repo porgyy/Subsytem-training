@@ -222,8 +222,7 @@ public class Drive extends SubsystemBase {
     }
 
     // Apply odometry update
-    poseManager.addOdometryMeasurement(
-        rawGyroRotation, modulePositions, gyroInputs.yawVelocityRadPerSec);
+    poseManager.addOdometryMeasurement(rawGyroRotation, modulePositions);
 
     // Update current velocities use gyro when possible
     ChassisSpeeds robotRelativeVelocity = getSpeeds();
