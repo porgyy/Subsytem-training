@@ -15,6 +15,7 @@ import frc.robot.FieldConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.Pipelines;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.leds.Leds;
+import frc.robot.util.GeneralUtil;
 import frc.robot.util.GeomUtil;
 import frc.robot.util.PoseManager;
 import frc.robot.util.VirtualSubsystem;
@@ -38,7 +39,7 @@ public class AprilTagVision extends VirtualSubsystem {
 
     Leds.getInstance().tagsDetected = inputs.tagCount > 0;
 
-    Pose2d estimatedPose = inputs.estimatedPose;
+    Pose2d estimatedPose = inputs.estimatedPose.toPose2d();
     // Exit if there are no tags in sight or the pose is blank
     if (inputs.tagCount == 0 || estimatedPose.equals(new Pose2d())) return;
 
@@ -47,6 +48,9 @@ public class AprilTagVision extends VirtualSubsystem {
         || estimatedPose.getX() > FieldConstants.fieldLength + fieldBorderMargin
         || estimatedPose.getY() < -fieldBorderMargin
         || estimatedPose.getY() > FieldConstants.fieldWidth + fieldBorderMargin) return;
+
+    // Exit if the estimated pose is too far off the ground
+    if (!GeneralUtil.equalsWithTolerance(estimatedPose.getY(), 0, 0.3)) return;
 
     // Exit if the estimated pose is too far away from current pose
     double allowableDistance = inputs.tagCount; // In meters

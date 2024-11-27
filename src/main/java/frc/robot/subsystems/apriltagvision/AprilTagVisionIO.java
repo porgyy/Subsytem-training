@@ -1,13 +1,13 @@
 package frc.robot.subsystems.apriltagvision;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.util.PoseManager;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
-    public Pose2d estimatedPose;
+    public Pose3d estimatedPose;
     public double timestamp;
     public int tagCount;
     public double avgTagDist;
