@@ -68,13 +68,6 @@ public class ModuleIOMixed implements ModuleIO {
 
   private final LoggedTunableNumber drive_kS =
       new LoggedTunableNumber("drive_kS", 0.05); // Add 0.05 V output to overcome static friction
-  private final LoggedTunableNumber drive_kV =
-      new LoggedTunableNumber(
-          "drive_kV", 0.0); // A velocity target of 1 rps results in 0.02 V output
-  private final LoggedTunableNumber drive_kP =
-      new LoggedTunableNumber("drive_kP", 0.0); // An error of 1 rps results in 0.11 V output
-  private final LoggedTunableNumber drive_kD =
-      new LoggedTunableNumber("drive_kD", 0.0); // no output for error derivative
 
   public ModuleIOMixed(int index) {
     switch (index) {
@@ -224,14 +217,8 @@ public class ModuleIOMixed implements ModuleIO {
         () -> {
           Slot0Configs slot0Configs = new Slot0Configs();
           slot0Configs.kS = drive_kS.get();
-          slot0Configs.kV = drive_kV.get();
-          slot0Configs.kP = drive_kP.get();
-          slot0Configs.kD = drive_kD.get();
           driveTalon.getConfigurator().apply(slot0Configs);
         },
-        drive_kS,
-        drive_kV,
-        drive_kP,
-        drive_kD);
+        drive_kS);
   }
 }
