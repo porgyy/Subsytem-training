@@ -140,6 +140,16 @@ public class GeomUtil {
   }
 
   /**
+   * Converts a ChassisSpeeds to a Twist2d by extracting two dimensions (Y and Z). chain
+   *
+   * @param speeds The original translation
+   * @return The resulting translation
+   */
+  public static ChassisSpeeds toChassisSpeeds(Twist2d speeds) {
+    return new ChassisSpeeds(speeds.dx, speeds.dy, speeds.dtheta);
+  }
+
+  /**
    * Creates a new pose from an existing one using a different translation value.
    *
    * @param pose The original pose
