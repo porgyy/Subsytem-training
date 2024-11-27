@@ -15,7 +15,7 @@ import frc.robot.FieldConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.Pipelines;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.leds.Leds;
-import frc.robot.util.GeneralUtil;
+import frc.robot.util.Util;
 import frc.robot.util.GeomUtil;
 import frc.robot.util.PoseManager;
 import frc.robot.util.VirtualSubsystem;
@@ -51,7 +51,7 @@ public class AprilTagVision extends VirtualSubsystem {
         || estimatedPose.getY() > FieldConstants.fieldWidth + fieldBorderMargin) return;
 
     // Exit if the estimated pose is too far off the ground
-    if (!GeneralUtil.equalsWithTolerance(estimatedPose.getY(), 0, 0.3)) return;
+    if (!Util.equalsWithTolerance(estimatedPose.getY(), 0, 0.3)) return;
 
     // Exit if the estimated pose is too far away from current pose
     double allowableDistance = inputs.tagCount; // In meters

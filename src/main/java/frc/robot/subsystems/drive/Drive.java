@@ -40,7 +40,7 @@ import frc.robot.subsystems.drive.DriveConstants.DriveCommandsConfig;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.util.Alert;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.GeneralUtil;
+import frc.robot.util.Util;
 import frc.robot.util.GeomUtil;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
@@ -235,7 +235,7 @@ public class Drive extends SubsystemBase {
     // update the brake mode based on the robot's velocity and state (enabled/disabled)
     updateBrakeMode();
 
-    GeneralUtil.logSubsystem(this, "Drive");
+    Util.logSubsystem(this, "Drive");
   }
 
   /**
@@ -585,7 +585,7 @@ public class Drive extends SubsystemBase {
   /** Returns true if within tolerance of aiming at speaker */
   @AutoLogOutput(key = "Drive/Commands/Theta/AtGoal")
   public boolean thetaAtGoal() {
-    return GeneralUtil.equalsWithTolerance(
+    return Util.equalsWithTolerance(
         thetaController.getSetpoint().position,
         thetaController.getGoal().position,
         Units.degreesToRadians(thetaToleranceDeg.get()));
