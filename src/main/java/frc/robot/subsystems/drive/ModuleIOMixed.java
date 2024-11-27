@@ -58,6 +58,7 @@ public class ModuleIOMixed implements ModuleIO {
   private final double DRIVE_GEAR_RATIO = 6.12244897959;
   private final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
+  private final boolean isDriveMotorInverted = true;
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
@@ -169,7 +170,7 @@ public class ModuleIOMixed implements ModuleIO {
   @Override
   public void setDriveBrakeMode(boolean enable) {
     var config = new MotorOutputConfigs();
-    config.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.Inverted = isDriveMotorInverted ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     driveTalon.getConfigurator().apply(config);
   }
