@@ -21,6 +21,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.Alert;
+import frc.robot.util.LoggedTunableNumber;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -35,6 +37,12 @@ public class Module {
   private final SimpleMotorFeedforward driveFeedforward;
   private final PIDController driveFeedback;
   private final PIDController turnFeedback;
+
+  private final LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/Tunables/drivekP", 0.11);
+  private final LoggedTunableNumber drivekD = new LoggedTunableNumber("Drive/Tunables/drivekD", 0.0);
+  private final LoggedTunableNumber turnkP = new LoggedTunableNumber("Drive/Tunables/turnkP", 0.25);
+  private final LoggedTunableNumber turnkD = new LoggedTunableNumber("Drive/Tunables/turnkD", 0.0);
+
   private Rotation2d angleSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Double speedSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
@@ -61,8 +69,8 @@ public class Module {
       case REAL:
       case REPLAY:
         driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
-        driveFeedback = new PIDController(0.05, 0.0, 0.0);
-        turnFeedback = new PIDController(7.0, 0.0, 0.0);
+        driveFeedback = new PIDController(drivekP.get(), 0.0, drivekD.get());
+        turnFeedback = new PIDController(turnkP.get(), 0.0, turnkD.get());
         break;
       case SIM:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
@@ -78,11 +86,14 @@ public class Module {
 
     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     setBrakeMode(true);
+    updateTunables();
   }
 
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
+
+    updateTunables();
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -187,5 +198,19 @@ public class Module {
   /** Returns the module state (turn angle and drive velocity). */
   public SwerveModuleState getState() {
     return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
+  }
+
+  private void updateTunables() {
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () -> driveFeedback.setPID(drivekP.get(), 0, drivekD.get()),
+        drivekP,
+        drivekD);
+    
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () -> turnFeedback.setPID(turnkP.get(), 0, turnkD.get()),
+        turnkP,
+        turnkD);
   }
 }
