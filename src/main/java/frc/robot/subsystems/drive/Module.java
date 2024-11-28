@@ -38,10 +38,10 @@ public class Module {
   private final PIDController driveFeedback;
   private final PIDController turnFeedback;
 
-  private final LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/Tunables/drivekP", 0.11);
-  private final LoggedTunableNumber drivekD = new LoggedTunableNumber("Drive/Tunables/drivekD", 0.0);
-  private final LoggedTunableNumber turnkP = new LoggedTunableNumber("Drive/Tunables/turnkP", 0.25);
-  private final LoggedTunableNumber turnkD = new LoggedTunableNumber("Drive/Tunables/turnkD", 0.0);
+  private final LoggedTunableNumber drivekP;
+  private final LoggedTunableNumber drivekD;
+  private final LoggedTunableNumber turnkP;
+  private final LoggedTunableNumber turnkD;
 
   private Rotation2d angleSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Double speedSetpoint = null; // Setpoint for closed loop control, null for open loop
@@ -66,23 +66,24 @@ public class Module {
     // Switch constants based on mode (the physics simulator is treated as a
     // separate robot with different tuning)
     switch (Constants.currentMode) {
-      case REAL:
-      case REPLAY:
+      default:
         driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
-        driveFeedback = new PIDController(drivekP.get(), 0.0, drivekD.get());
-        turnFeedback = new PIDController(turnkP.get(), 0.0, turnkD.get());
+        drivekP = new LoggedTunableNumber("Drive/Tunables/drivekP", 0.11);
+        drivekD = new LoggedTunableNumber("Drive/Tunables/drivekD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/Tunables/turnkP", 0.25);
+        turnkD = new LoggedTunableNumber("Drive/Tunables/turnkD", 0.0);
         break;
       case SIM:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
-        driveFeedback = new PIDController(0.1, 0.0, 0.0);
-        turnFeedback = new PIDController(10.0, 0.0, 0.0);
-        break;
-      default:
-        driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
-        driveFeedback = new PIDController(0.0, 0.0, 0.0);
-        turnFeedback = new PIDController(0.0, 0.0, 0.0);
+        drivekP = new LoggedTunableNumber("Drive/SimTunables/drivekP", 0.1);
+        drivekD = new LoggedTunableNumber("Drive/SimTunables/drivekD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/SimTunables/turnkP", 10);
+        turnkD = new LoggedTunableNumber("Drive/SimTunables/turnkD", 0.0);
         break;
     }
+
+    driveFeedback = new PIDController(drivekP.get(), 0.0, drivekD.get());
+    turnFeedback = new PIDController(turnkP.get(), 0.0, turnkD.get());
 
     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     setBrakeMode(true);
