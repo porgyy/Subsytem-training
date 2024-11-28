@@ -17,7 +17,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -31,7 +30,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.util.LoggedTunableNumber;
 
 /**
  * Module IO implementation for Talon FX drive motor controller, Talon FX turn motor controller, and
@@ -65,9 +63,6 @@ public class ModuleIOMixed implements ModuleIO {
   private final boolean isTurnMotorInverted;
   private final boolean isCancoderInverted;
   private final double absoluteEncoderOffseRot; // TODO tune
-
-  private final LoggedTunableNumber drive_kS =
-      new LoggedTunableNumber("drive_kS", 0.05); // Add 0.05 V output to overcome static friction
 
   public ModuleIOMixed(int index) {
     switch (index) {
@@ -155,8 +150,6 @@ public class ModuleIOMixed implements ModuleIO {
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, driveVelocity, driveAppliedVolts, driveCurrent, turnAbsolutePosition);
     driveTalon.optimizeBusUtilization();
-
-    updateTunables();
   }
 
   @Override
@@ -181,8 +174,6 @@ public class ModuleIOMixed implements ModuleIO {
             / TURN_GEAR_RATIO;
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
-
-    updateTunables();
   }
 
   @Override
@@ -209,16 +200,5 @@ public class ModuleIOMixed implements ModuleIO {
   @Override
   public void setTurnBrakeMode(boolean enable) {
     turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
-  }
-
-  private void updateTunables() {
-    LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> {
-          Slot0Configs slot0Configs = new Slot0Configs();
-          slot0Configs.kS = drive_kS.get();
-          driveTalon.getConfigurator().apply(slot0Configs);
-        },
-        drive_kS);
   }
 }
