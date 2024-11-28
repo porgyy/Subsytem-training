@@ -22,7 +22,6 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.Alert;
 import frc.robot.util.LoggedTunableNumber;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -203,15 +202,9 @@ public class Module {
 
   private void updateTunables() {
     LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> driveFeedback.setPID(drivekP.get(), 0, drivekD.get()),
-        drivekP,
-        drivekD);
-    
+        hashCode(), () -> driveFeedback.setPID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
+
     LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> turnFeedback.setPID(turnkP.get(), 0, turnkD.get()),
-        turnkP,
-        turnkD);
+        hashCode(), () -> turnFeedback.setPID(turnkP.get(), 0, turnkD.get()), turnkP, turnkD);
   }
 }
