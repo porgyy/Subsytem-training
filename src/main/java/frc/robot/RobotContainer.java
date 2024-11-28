@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import choreo.Choreo;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -117,6 +118,9 @@ public class RobotContainer {
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {}, poseManager);
         break;
     }
+
+    var traj = Choreo.loadTrajectory("a");
+    System.out.println("--------------------\n" + traj.toString() + "\n--------------------");
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
