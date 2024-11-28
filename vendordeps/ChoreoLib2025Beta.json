@@ -5,7 +5,7 @@
   "uuid": "b5e23f0a-dac9-4ad2-8dd6-02767c520aca",
   "frcYear": "2024",
   "mavenUrls": [
-    "https://lib.choreo.autos/dep",
+    "https://SleipnirGroup.github.io/ChoreoLib/dep",
     "https://repo1.maven.org/maven2"
   ],
   "jsonUrl": "https://github.com/SleipnirGroup/Choreo/releases/tag/v2025.0.0-beta-3",
