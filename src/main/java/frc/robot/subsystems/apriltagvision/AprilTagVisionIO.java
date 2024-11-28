@@ -7,12 +7,12 @@ import org.littletonrobotics.junction.AutoLog;
 public interface AprilTagVisionIO {
   @AutoLog
   public static class AprilTagVisionIOInputs {
-    public Pose3d estimatedPose;
-    public double timestamp;
-    public int tagCount;
-    public double avgTagDist;
+    public Pose3d estimatedPose = new Pose3d();
+    public double timestamp = 0.0;
+    public int tagCount = 0;
+    public double avgTagDist = 0.0;
     /** percentage of image */
-    public double avgTagArea;
+    public double avgTagArea = 0.0;
 
     public double pipeline = 0; // TODO store the pipelines where the code can see them
     /** 0 = pipeline control, 1 = force off, 2 = force blink, 3 = force on */
