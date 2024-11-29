@@ -123,8 +123,8 @@ public class Robot extends LoggedRobot {
     robotContainer = new RobotContainer();
 
     DriverStation.silenceJoystickConnectionWarning(true);
-    // Logger.recordOutput("ZeroedPose", new Pose2d());
-    // Logger.recordOutput("ZeroedPoseIntake", new Pose3d());
+    // Logger.recordOutput("ZeroedPose2d", new Pose2d());
+    // Logger.recordOutput("ZeroedPose3d", new Pose3d());
 
     // Set up port forwarding for limelights so we can connect to them through the RoboRIO USB port
     for (int port = 5800; port <= 5809; port++) {
