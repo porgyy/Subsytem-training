@@ -173,7 +173,7 @@ public class RobotContainer {
         "circle",
         (AutoFactory factory) -> {
           final AutoLoop loop = factory.newLoop("circle");
-          final AutoTrajectory trajectory = factory.trajectory("a", loop);
+          final AutoTrajectory trajectory = factory.trajectory("circle", loop);
 
           loop.enabled()
               .onTrue(
