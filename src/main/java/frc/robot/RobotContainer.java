@@ -36,8 +36,8 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMixed;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.util.Alert;
-import frc.robot.util.AutoController;
 import frc.robot.util.Alert.AlertType;
+import frc.robot.util.AutoController;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -131,12 +131,11 @@ public class RobotContainer {
     // Set up auto factory
     autoFactory =
         Choreo.createAutoFactory(
-            drive, // The drive subsystem
-            poseManager::getPose, // A function that returns the current robot pose
-            autoController, // The controller for the drive subsystem
-            AllianceFlipUtil::shouldFlip, // A function that returns true if the robot is on the red alliance
-            new AutoBindings() // An empty `AutoBindings` object, you can learn more below
-            );
+            drive,
+            poseManager::getPose,
+            autoController,
+            AllianceFlipUtil::shouldFlip,
+            new AutoBindings());
 
     // Set up auto chooser
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
