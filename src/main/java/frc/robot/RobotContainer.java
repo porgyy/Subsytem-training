@@ -58,7 +58,7 @@ public class RobotContainer {
   private final AutoFactory autoFactory;
   private final AutoController autoController;
 
-  // Controller
+  // Controllers + driving
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandPS5Controller operator =
       new CommandPS5Controller(1); // TODO will we still be using a PS5?
@@ -66,10 +66,8 @@ public class RobotContainer {
       new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
   private final Alert operatorDisconnected =
       new Alert("Operator controller disconnected (port 1).", AlertType.WARNING);
-  public boolean slowMode = false;
 
-  // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  public boolean slowMode = false;
   private final LoggedTunableNumber slowDriveMultiplier =
       new LoggedTunableNumber("Slow Drive Multiplier", 0.6);
   private final LoggedTunableNumber slowTurnMultiplier =
@@ -77,6 +75,12 @@ public class RobotContainer {
 
   private final DriveCommandsConfig driveCommandsConfig =
       new DriveCommandsConfig(driver, () -> slowMode, slowDriveMultiplier, slowTurnMultiplier);
+
+  // Autos
+  private final AutoChooser autoChooser;
+  private final LoggedDashboardChooser<Command> sysIdChooser =
+      new LoggedDashboardChooser<Command>("SysId Chooser");
+  private static final boolean doingSysId = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
