@@ -14,6 +14,9 @@
 package frc.robot;
 
 import choreo.Choreo;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoFactory.AutoBindings;
+import choreo.util.AllianceFlipUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -33,6 +36,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMixed;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.util.Alert;
+import frc.robot.util.AutoController;
 import frc.robot.util.Alert.AlertType;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
@@ -49,8 +53,10 @@ public class RobotContainer {
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
 
-  // Pose Manager
+  // Non-subsystems
   private final PoseManager poseManager = new PoseManager();
+  private final AutoFactory autoFactory;
+  private final AutoController autoController;
 
   // Controller
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -119,10 +125,20 @@ public class RobotContainer {
         break;
     }
 
-    var traj = Choreo.loadTrajectory("a");
-    System.out.println("--------------------\n" + traj.toString() + "\n--------------------");
+    // Set up auto controller
+    autoController = new AutoController(drive);
 
-    // Set up auto routines
+    // Set up auto factory
+    autoFactory =
+        Choreo.createAutoFactory(
+            drive, // The drive subsystem
+            poseManager::getPose, // A function that returns the current robot pose
+            autoController, // The controller for the drive subsystem
+            AllianceFlipUtil::shouldFlip, // A function that returns true if the robot is on the red alliance
+            new AutoBindings() // An empty `AutoBindings` object, you can learn more below
+            );
+
+    // Set up auto chooser
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
 
     if (!DriverStation.isFMSAttached()) {
