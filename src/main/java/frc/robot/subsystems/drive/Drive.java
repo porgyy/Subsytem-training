@@ -494,14 +494,6 @@ public class Drive extends SubsystemBase {
     LoggedTunableNumber.ifChanged(
         hashCode(), () -> linearController.setTolerance(linearTolerance.get()), linearTolerance);
 
-    LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> linearController.setPID(linearkP.get(), 0, linearkD.get()),
-        linearkP,
-        linearkD);
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> linearController.setTolerance(linearTolerance.get()), linearTolerance);
-
     updateThetaTunables();
   }
 
