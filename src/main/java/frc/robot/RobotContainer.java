@@ -193,6 +193,54 @@ public class RobotContainer {
           return loop.cmd();
         });
 
+    autoChooser.addAutoRoutine(
+        "better circle",
+        (AutoFactory factory) -> {
+          final AutoLoop loop = factory.newLoop("better circle");
+          final AutoTrajectory trajectory = factory.trajectory("better circle", loop);
+
+          loop.enabled()
+              .onTrue(
+                  Commands.runOnce(
+                          () ->
+                              poseManager.setPose(
+                                  trajectory
+                                      .getInitialPose()
+                                      .orElseGet(
+                                          () -> {
+                                            loop.kill();
+                                            return new Pose2d();
+                                          })))
+                      .andThen(trajectory.cmd())
+                      .withName("better circle entry point"));
+
+          return loop.cmd();
+        });
+
+    autoChooser.addAutoRoutine(
+        "get a note and shoot it",
+        (AutoFactory factory) -> {
+          final AutoLoop loop = factory.newLoop("get a note and shoot it");
+          final AutoTrajectory trajectory = factory.trajectory("get a note and shoot it", loop);
+
+          loop.enabled()
+              .onTrue(
+                  Commands.runOnce(
+                          () ->
+                              poseManager.setPose(
+                                  trajectory
+                                      .getInitialPose()
+                                      .orElseGet(
+                                          () -> {
+                                            loop.kill();
+                                            return new Pose2d();
+                                          })))
+                      .andThen(trajectory.cmd())
+                      .withName("get a note and shoot it entry point"));
+
+          return loop.cmd();
+        });
+
     if (!DriverStation.isFMSAttached()) {
       // Set up test routines
 
