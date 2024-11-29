@@ -77,6 +77,8 @@ public class RobotContainer {
       new DriveCommandsConfig(driver, () -> slowMode, slowDriveMultiplier, slowTurnMultiplier);
 
   // Autos
+  private final AutoFactory autoFactory;
+  private final AutoController autoController;
   private final AutoChooser autoChooser;
   private final LoggedDashboardChooser<Command> sysIdChooser =
       new LoggedDashboardChooser<Command>("SysId Chooser");
@@ -205,12 +207,16 @@ public class RobotContainer {
                 operator.getHID().getPort())); // Should not be an XBox controller
   }
 
+  public void updateAutoChooser() {
+    autoChooser.update();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return doingSysId ? sysIdChooser.get() : autoChooser.getSelectedAutoRoutine();
   }
 }

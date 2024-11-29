@@ -156,6 +156,7 @@ public class Robot extends LoggedRobot {
 
     // Robot container periodic methods
     robotContainer.checkControllers();
+    robotContainer.updateAutoChooser();
 
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
