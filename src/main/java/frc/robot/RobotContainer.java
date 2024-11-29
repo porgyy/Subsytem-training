@@ -14,8 +14,13 @@
 package frc.robot;
 
 import choreo.Choreo;
+import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoFactory.AutoBindings;
+import choreo.auto.AutoLoop;
+import choreo.auto.AutoTrajectory;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import choreo.util.AllianceFlipUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,6 +45,7 @@ import frc.robot.util.Alert.AlertType;
 import frc.robot.util.AutoController;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -55,8 +61,6 @@ public class RobotContainer {
 
   // Non-subsystems
   private final PoseManager poseManager = new PoseManager();
-  private final AutoFactory autoFactory;
-  private final AutoController autoController;
 
   // Controllers + driving
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -141,10 +145,53 @@ public class RobotContainer {
             poseManager::getPose,
             autoController,
             AllianceFlipUtil::shouldFlip,
-            new AutoBindings());
+            new AutoBindings(),
+            (Trajectory<SwerveSample> traj, Boolean bool) -> {
+              Logger.recordOutput(
+                  "Drive/Choreo/Active Traj",
+                  (AllianceFlipUtil.shouldFlip() ? traj.flipped() : traj).getPoses());
+              Logger.recordOutput(
+                  "Drive/Choreo/Target Pose",
+                  traj.sampleAt(traj.getTotalTime(), AllianceFlipUtil.shouldFlip()).getPose());
+              Logger.recordOutput(
+                  "Drive/Choreo/Target Speeds",
+                  traj.sampleAt(traj.getTotalTime(), AllianceFlipUtil.shouldFlip())
+                      .getChassisSpeeds());
+              Logger.recordOutput(
+                  "Drive/Choreo/Current Traj End Pose",
+                  traj.getFinalPose(AllianceFlipUtil.shouldFlip()));
+              Logger.recordOutput(
+                  "Drive/Choreo/Current Traj Start Pose",
+                  traj.getInitialPose(AllianceFlipUtil.shouldFlip()));
+            });
 
-    // Set up auto chooser
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices");
+    // Set up auto chooser for choreo
+    autoChooser = new AutoChooser(autoFactory, "Auto Chooser Chor");
+
+    // Add choreo auto options
+    autoChooser.addAutoRoutine(
+        "circle",
+        (AutoFactory factory) -> {
+          final AutoLoop loop = factory.newLoop("circle");
+          final AutoTrajectory trajectory = factory.trajectory("a", loop);
+
+          loop.enabled()
+              .onTrue(
+                  Commands.runOnce(
+                          () ->
+                              poseManager.setPose(
+                                  trajectory
+                                      .getInitialPose()
+                                      .orElseGet(
+                                          () -> {
+                                            loop.kill();
+                                            return new Pose2d();
+                                          })))
+                      .andThen(trajectory.cmd())
+                      .withName("circle entry point"));
+
+          return loop.cmd();
+        });
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test routines
