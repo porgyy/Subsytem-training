@@ -151,13 +151,6 @@ public class RobotContainer {
                   "Drive/Choreo/Active Traj",
                   (AllianceFlipUtil.shouldFlip() ? traj.flipped() : traj).getPoses());
               Logger.recordOutput(
-                  "Drive/Choreo/Target Pose",
-                  traj.sampleAt(traj.getTotalTime(), AllianceFlipUtil.shouldFlip()).getPose());
-              Logger.recordOutput(
-                  "Drive/Choreo/Target Speeds",
-                  traj.sampleAt(traj.getTotalTime(), AllianceFlipUtil.shouldFlip())
-                      .getChassisSpeeds());
-              Logger.recordOutput(
                   "Drive/Choreo/Current Traj End Pose",
                   traj.getFinalPose(AllianceFlipUtil.shouldFlip()));
               Logger.recordOutput(

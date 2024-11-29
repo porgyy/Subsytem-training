@@ -3,9 +3,11 @@ package frc.robot.util;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.BiConsumer;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoController implements BiConsumer<Pose2d, SwerveSample> {
   private final Drive drive;
@@ -42,6 +44,11 @@ public class AutoController implements BiConsumer<Pose2d, SwerveSample> {
     ChassisSpeeds out =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback, pose.getRotation());
+
+    Logger.recordOutput(
+        "Drive/Choreo/Target Pose",
+        new Pose2d(referenceState.x, referenceState.y, new Rotation2d(referenceState.heading)));
+    Logger.recordOutput("Drive/Choreo/Target Speeds", out);
 
     drive.runVelocity(out);
   }
